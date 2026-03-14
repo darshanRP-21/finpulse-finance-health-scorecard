@@ -1,68 +1,841 @@
-# 💰 FinPulse — Personal Finance Health Scorecard
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FinPulse by Darshan Pipada — Personal Finance Health Score</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0f1a;
+    --surface: #13162a;
+    --surface2: #181c30;
+    --surface3: #1e2238;
+    --border: #252a42;
+    --text: #eef0f8;
+    --muted: #6b7099;
+    --accent: #6c63ff;
+    --accent-glow: rgba(108,99,255,0.18);
+    --accent-light: rgba(108,99,255,0.12);
+    --teal: #00d4aa;
+    --teal-light: rgba(0,212,170,0.1);
+    --amber: #ffb347;
+    --amber-light: rgba(255,179,71,0.1);
+    --rose: #ff5f7e;
+    --rose-light: rgba(255,95,126,0.1);
+    --green: #4ade80;
+    --green-light: rgba(74,222,128,0.1);
+    --shadow: 0 4px 24px rgba(0,0,0,0.3);
+    --shadow-lg: 0 12px 60px rgba(0,0,0,0.4);
+  }
 
-> An AI-powered personal finance health scoring tool that evaluates your financial situation across 5 key pillars and generates personalised advice.
+  * { margin: 0; padding: 0; box-sizing: border-box; }
 
-🔗 **[Try the Live Demo](https://darshanrp-21.github.io/finpulse-finance-health-scorecard/)**
+  body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
 
----
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image:
+      linear-gradient(rgba(108,99,255,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(108,99,255,0.04) 1px, transparent 1px);
+    background-size: 48px 48px;
+    pointer-events: none; z-index: 0;
+  }
 
-## 🧾 About the Project
+  .blob { position: fixed; border-radius: 50%; filter: blur(100px); pointer-events: none; z-index: 0; opacity: 0.13; }
+  .b1 { width: 460px; height: 460px; background: var(--accent); top: -180px; right: -120px; }
+  .b2 { width: 360px; height: 360px; background: var(--teal); bottom: -120px; left: -80px; }
 
-Most people have no idea where they actually stand financially.
+  /* HEADER */
+  header {
+    position: relative; z-index: 10;
+    background: rgba(13,15,26,0.88);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    padding: 15px 40px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
 
-I built **FinPulse** to change that — enter 8 simple numbers and get a detailed Finance Health Score out of 100, a visual breakdown across 5 financial pillars, and an AI-generated personalised action plan.
+  .logo { display: flex; align-items: center; gap: 13px; }
 
-This project applies personal finance concepts I've been studying — savings benchmarks, debt-to-income ratios, liquidity coverage — and brings them to life through code and AI.
+  .logo-icon {
+    width: 42px; height: 42px;
+    background: linear-gradient(135deg, var(--accent) 0%, #a78bfa 100%);
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 4px 18px rgba(108,99,255,0.35);
+    position: relative; overflow: hidden; flex-shrink: 0;
+  }
+  .logo-icon::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.18), transparent);
+  }
+  .logo-icon svg { position: relative; z-index: 1; }
 
----
+  .logo-name {
+    font-family: 'Syne', sans-serif;
+    font-size: 20px; font-weight: 800;
+    letter-spacing: -0.5px;
+    background: linear-gradient(90deg, #fff 30%, #a78bfa 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    display: block;
+  }
+  .logo-sub {
+    font-size: 10px; color: var(--muted);
+    letter-spacing: 1.5px; text-transform: uppercase; font-weight: 500;
+    display: block; margin-top: 1px;
+  }
 
-## 📊 Features
+  .header-tag {
+    display: flex; align-items: center; gap: 7px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    padding: 7px 16px;
+    border-radius: 100px;
+    font-size: 11.5px; font-weight: 500;
+  }
+  .header-tag b { color: var(--teal); font-weight: 600; }
 
-- ✅ Finance Health Score out of 100
-- ✅ 5-pillar breakdown with animated progress bars
-- ✅ Colour-coded scoring (green / amber / red)
-- ✅ AI-generated personalised financial guidance
-- ✅ Animated score dial
-- ✅ Input validation & error handling
-- ✅ Fully responsive design
+  /* PAGE */
+  .page {
+    position: relative; z-index: 1;
+    max-width: 880px; margin: 0 auto;
+    padding: 52px 24px 80px;
+  }
 
----
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(18px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
 
-## 🧠 Finance Concepts Applied
+  /* FORM */
+  .form-section { animation: fadeUp 0.5s ease both; }
 
-| Pillar | Benchmark Used |
-|---|---|
-| Savings Rate | ≥ 20% of monthly income |
-| Debt Load | Debt-to-Income ratio < 30% |
-| Emergency Fund | 3–6 months of expenses |
-| Investment Ratio | ≥ 10% of monthly income |
-| Spending Discipline | Expense ratio + insurance coverage |
+  .form-hero { text-align: center; margin-bottom: 44px; }
 
----
+  .eyebrow {
+    display: inline-flex; align-items: center; gap: 7px;
+    background: var(--accent-light);
+    border: 1px solid rgba(108,99,255,0.25);
+    color: #a78bfa;
+    padding: 5px 16px; border-radius: 100px;
+    font-size: 11px; font-weight: 600;
+    letter-spacing: 1.5px; text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+  .eyebrow-dot { width: 6px; height: 6px; background: var(--accent); border-radius: 50%; animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.4;transform:scale(0.8)} }
 
-## 🛠️ Built With
+  .form-hero h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(30px, 5vw, 50px);
+    font-weight: 800; line-height: 1.12;
+    letter-spacing: -1.5px; margin-bottom: 16px;
+  }
+  .grad {
+    background: linear-gradient(90deg, var(--accent), var(--teal));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .form-hero p {
+    color: var(--muted); font-size: 15px; font-weight: 300;
+    max-width: 420px; margin: 0 auto; line-height: 1.75;
+  }
 
-- Python
-- HTML
-- Claude AI API (Anthropic)
+  .form-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 24px; padding: 40px 44px;
+    box-shadow: var(--shadow-lg);
+  }
 
----
+  @media (max-width: 640px) {
+    .form-card { padding: 28px 20px; }
+    header { padding: 14px 18px; }
+    .header-tag { display: none; }
+  }
 
-## 📸 Preview
+  .sec-label {
+    font-size: 10.5px; font-weight: 700;
+    letter-spacing: 2px; text-transform: uppercase;
+    color: var(--muted); margin-bottom: 18px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .sec-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
 
-> Enter your monthly income, savings, expenses, debt, emergency fund, investments and insurance → get your score instantly.
+  .fgrid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 18px; margin-bottom: 6px;
+  }
+  @media (max-width: 520px) { .fgrid { grid-template-columns: 1fr; } }
 
----
+  .fg { display: flex; flex-direction: column; gap: 7px; }
+  .fg label {
+    font-size: 11.5px; font-weight: 600;
+    letter-spacing: 0.3px; color: var(--muted);
+    text-transform: uppercase;
+  }
+  .iw { position: relative; }
+  .iw .sym {
+    position: absolute; left: 14px; top: 50%;
+    transform: translateY(-50%);
+    color: var(--muted); font-family: 'JetBrains Mono', monospace;
+    font-size: 13px; pointer-events: none;
+  }
+  .iw input {
+    width: 100%;
+    background: var(--surface2);
+    border: 1.5px solid var(--border);
+    border-radius: 12px;
+    padding: 13px 14px 13px 30px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px; color: var(--text);
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+  }
+  .iw input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-glow);
+    background: var(--surface3);
+  }
+  .iw input::placeholder { color: #2e3452; }
+  .hint { font-size: 11px; color: #3a3f5c; }
 
-## ⚠️ Disclaimer
+  .sep { height: 28px; }
 
-This is an **educational project only** and does not constitute financial advice. All scoring is based on general personal finance benchmarks. Please consult a certified financial planner before making any financial decisions.
+  .btn-go {
+    width: 100%; margin-top: 8px;
+    background: linear-gradient(135deg, var(--accent), #8b5cf6);
+    color: #fff; border: none; border-radius: 14px;
+    padding: 16px;
+    font-family: 'Syne', sans-serif;
+    font-size: 15px; font-weight: 700; letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: all 0.25s;
+    box-shadow: 0 6px 28px rgba(108,99,255,0.3);
+  }
+  .btn-go:hover { transform: translateY(-2px); box-shadow: 0 10px 36px rgba(108,99,255,0.44); }
+  .btn-go:active { transform: translateY(0); }
+  .btn-go:disabled { opacity: 0.45; cursor: not-allowed; transform: none; box-shadow: none; }
 
----
+  /* LOADING */
+  .loading-state {
+    display: none; text-align: center;
+    padding: 100px 20px; animation: fadeUp 0.3s ease both;
+  }
+  .spinner {
+    width: 50px; height: 50px;
+    border: 2px solid var(--border);
+    border-top-color: var(--accent);
+    border-right-color: var(--teal);
+    border-radius: 50%;
+    animation: spin 0.85s linear infinite;
+    margin: 0 auto 24px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .loading-state p { color: var(--muted); font-size: 14px; line-height: 1.8; }
+  .loading-state strong { color: var(--text); }
 
-## 👤 Author
+  /* RESULTS */
+  .results-section { display: none; animation: fadeUp 0.5s ease both; }
 
-**Darshan Pipada**
-Finance & Technology Student
-[LinkedIn](www.linkedin.com/in/darshan-pipada9168789321)
-  
+  .rtop {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 28px; flex-wrap: wrap; gap: 12px;
+  }
+  .rtop h2 {
+    font-family: 'Syne', sans-serif;
+    font-size: 26px; font-weight: 800; letter-spacing: -0.5px;
+  }
+  .btn-back {
+    background: var(--surface2); border: 1px solid var(--border);
+    color: var(--muted); padding: 9px 18px; border-radius: 10px;
+    font-size: 13px; font-weight: 600; cursor: pointer;
+    font-family: 'Plus Jakarta Sans', sans-serif; transition: all 0.2s;
+  }
+  .btn-back:hover { border-color: var(--accent); color: #a78bfa; }
+
+  /* Score card */
+  .score-card {
+    background: linear-gradient(135deg, #18104a 0%, #0e1e38 55%, #0d1e2d 100%);
+    border: 1px solid rgba(108,99,255,0.3);
+    border-radius: 26px; padding: 44px 48px;
+    margin-bottom: 20px;
+    display: flex; align-items: center; gap: 52px;
+    position: relative; overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  }
+  .score-card::before {
+    content: '';
+    position: absolute; top: -60px; right: -60px;
+    width: 280px; height: 280px;
+    background: radial-gradient(circle, rgba(108,99,255,0.18), transparent 70%);
+    pointer-events: none;
+  }
+  .score-card::after {
+    content: '';
+    position: absolute; bottom: -40px; left: 35%;
+    width: 200px; height: 200px;
+    background: radial-gradient(circle, rgba(0,212,170,0.1), transparent 70%);
+    pointer-events: none;
+  }
+  @media (max-width: 620px) {
+    .score-card { flex-direction: column; padding: 36px 28px; gap: 28px; text-align: center; }
+  }
+
+  .dial { position: relative; flex-shrink: 0; }
+  .dial svg { display: block; }
+  .dial-mid {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+  }
+  .dial-n {
+    font-family: 'Syne', sans-serif;
+    font-size: 54px; font-weight: 800; line-height: 1; color: #fff;
+  }
+  .dial-d { font-size: 12px; color: rgba(255,255,255,0.4); margin-top: 2px; }
+
+  .sinfo { flex: 1; z-index: 1; }
+  .sgrade {
+    font-size: 11px; letter-spacing: 2.5px;
+    text-transform: uppercase; font-weight: 700;
+    margin-bottom: 10px; color: var(--teal);
+  }
+  .sverdict {
+    font-family: 'Syne', sans-serif;
+    font-size: 32px; font-weight: 800;
+    line-height: 1.15; letter-spacing: -1px;
+    margin-bottom: 14px; color: #fff;
+  }
+  .stagline {
+    font-size: 14px; color: rgba(255,255,255,0.52);
+    line-height: 1.75; font-weight: 300; max-width: 360px;
+  }
+
+  /* Stats row */
+  .stats-row {
+    display: grid; grid-template-columns: repeat(3,1fr);
+    gap: 12px; margin-bottom: 20px;
+  }
+  @media (max-width: 460px) { .stats-row { grid-template-columns: 1fr; } }
+  .stat {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 14px; padding: 18px 20px; text-align: center;
+    transition: border-color 0.2s;
+  }
+  .stat:hover { border-color: rgba(108,99,255,0.3); }
+  .sv {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 22px; font-weight: 500; margin-bottom: 5px;
+  }
+  .sl { font-size: 10.5px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; font-weight: 600; }
+  .cg { color: var(--green); }
+  .ca { color: var(--amber); }
+  .cr { color: var(--rose); }
+
+  /* Pillars */
+  .pgrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(252px,1fr));
+    gap: 14px; margin-bottom: 20px;
+  }
+  .pillar {
+    background: var(--surface); border: 1.5px solid var(--border);
+    border-radius: 16px; padding: 20px 22px;
+    transition: transform 0.2s, border-color 0.2s;
+    animation: fadeUp 0.4s ease both;
+  }
+  .pillar:hover { transform: translateY(-3px); }
+  .phead { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 13px; }
+  .pleft { display: flex; align-items: center; gap: 10px; }
+  .pico { width: 38px; height: 38px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
+  .pname { font-size: 13px; font-weight: 700; margin-bottom: 3px; }
+  .pmeta { font-size: 11px; color: var(--muted); line-height: 1.45; }
+  .ppts { font-family: 'JetBrains Mono', monospace; font-size: 24px; font-weight: 500; flex-shrink: 0; }
+  .track { height: 5px; background: var(--surface3); border-radius: 3px; overflow: hidden; }
+  .bar { height: 100%; border-radius: 3px; width: 0%; transition: width 1.3s cubic-bezier(0.4,0,0.2,1); }
+
+  /* AI advice */
+  .advice {
+    background: var(--surface); border: 1.5px solid var(--border);
+    border-radius: 22px; padding: 32px 36px;
+    margin-bottom: 20px; position: relative; overflow: hidden;
+  }
+  .advice::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, var(--accent), var(--teal));
+  }
+  .advice-top { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
+  .ai-chip {
+    display: flex; align-items: center; gap: 6px;
+    background: var(--accent-light);
+    border: 1px solid rgba(108,99,255,0.22);
+    color: #a78bfa; padding: 5px 12px; border-radius: 100px;
+    font-size: 10.5px; font-weight: 700;
+    letter-spacing: 1.5px; text-transform: uppercase;
+  }
+  .ai-dot { width: 5px; height: 5px; background: var(--accent); border-radius: 50%; animation: pulse 1.8s infinite; }
+  .advice-title { font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 700; }
+  .advice-body { font-size: 14px; line-height: 1.9; color: #9ba3c4; font-weight: 300; }
+  .advice-body strong { color: var(--text); font-weight: 600; }
+
+  /* Footer */
+  .fnote {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 14px; padding: 20px 24px;
+    display: flex; gap: 14px; align-items: flex-start;
+  }
+  .fnote-icon { font-size: 18px; flex-shrink: 0; margin-top: 2px; }
+  .fnote p { font-size: 11.5px; color: var(--muted); line-height: 1.8; }
+  .fnote p strong { color: #8a91b8; }
+  .fnote p .chip {
+    display: inline-block;
+    background: var(--surface3); border: 1px solid var(--border);
+    border-radius: 5px; padding: 1px 8px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px; color: var(--teal); margin: 0 2px;
+  }
+
+  /* Toast */
+  .toast {
+    display: none; position: fixed;
+    top: 24px; left: 50%; transform: translateX(-50%);
+    background: var(--rose-light);
+    border: 1px solid rgba(255,95,126,0.3);
+    color: var(--rose); padding: 12px 24px;
+    border-radius: 100px; font-size: 13px; font-weight: 600;
+    z-index: 999; animation: fadeUp 0.3s ease; white-space: nowrap;
+  }
+</style>
+</head>
+<body>
+
+<div class="blob b1"></div>
+<div class="blob b2"></div>
+<div class="toast" id="toast"></div>
+
+<header>
+  <div class="logo">
+    <div class="logo-icon">
+      <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+        <rect x="2" y="12" width="4" height="8" rx="1.5" fill="rgba(255,255,255,0.55)"/>
+        <rect x="9" y="7" width="4" height="13" rx="1.5" fill="rgba(255,255,255,0.8)"/>
+        <rect x="16" y="2" width="4" height="18" rx="1.5" fill="white"/>
+        <polyline points="4,11 11,6 18,1" stroke="rgba(255,255,255,0.35)" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+      </svg>
+    </div>
+    <div>
+      <span class="logo-name">FinPulse</span>
+      <span class="logo-sub">Finance Health Engine</span>
+    </div>
+  </div>
+  <div class="header-tag">By Darshan Pipada · <b>Built with Python &amp; AI</b></div>
+</header>
+
+<div class="page">
+
+  <!-- FORM -->
+  <div class="form-section" id="formSection">
+    <div class="form-hero">
+      <div class="eyebrow"><div class="eyebrow-dot"></div>Personal Finance Tool</div>
+      <h1>Score your<br><span class="grad">financial health</span></h1>
+      <p>Enter your numbers below. Get a detailed breakdown across 5 financial pillars — plus AI-generated personalised advice.</p>
+    </div>
+
+    <div class="form-card">
+      <div class="sec-label">Income &amp; Savings</div>
+      <div class="fgrid">
+        <div class="fg">
+          <label>Monthly Income</label>
+          <div class="iw"><span class="sym">₹</span><input type="number" id="income" placeholder="50000" min="0"/></div>
+          <span class="hint">Your take-home pay / freelance income</span>
+        </div>
+        <div class="fg">
+          <label>Monthly Savings</label>
+          <div class="iw"><span class="sym">₹</span><input type="number" id="savings" placeholder="10000" min="0"/></div>
+          <span class="hint">Amount you set aside each month</span>
+        </div>
+      </div>
+
+      <div class="sep"></div>
+      <div class="sec-label">Expenses &amp; Debt</div>
+      <div class="fgrid">
+        <div class="fg">
+          <label>Monthly Expenses</label>
+          <div class="iw"><span class="sym">₹</span><input type="number" id="expenses" placeholder="30000" min="0"/></div>
+          <span class="hint">Rent, food, transport, lifestyle</span>
+        </div>
+        <div class="fg">
+          <label>Total Debt Outstanding</label>
+          <div class="iw"><span class="sym">₹</span><input type="number" id="debt" placeholder="100000" min="0"/></div>
+          <span class="hint">Loans, credit card, EMIs combined</span>
+        </div>
+      </div>
+
+      <div class="sep"></div>
+      <div class="sec-label">Emergency Fund &amp; Investments</div>
+      <div class="fgrid">
+        <div class="fg">
+          <label>Emergency Fund</label>
+          <div class="iw"><span class="sym">₹</span><input type="number" id="emergency" placeholder="60000" min="0"/></div>
+          <span class="hint">Liquid cash saved for emergencies</span>
+        </div>
+        <div class="fg">
+          <label>Monthly Investments</label>
+          <div class="iw"><span class="sym">₹</span><input type="number" id="investment" placeholder="5000" min="0"/></div>
+          <span class="hint">SIPs, stocks, mutual funds, FDs</span>
+        </div>
+      </div>
+
+      <div class="sep"></div>
+      <div class="sec-label">Protection &amp; Goals</div>
+      <div class="fgrid">
+        <div class="fg">
+          <label>Monthly Insurance Premium</label>
+          <div class="iw"><span class="sym">₹</span><input type="number" id="insurance" placeholder="2000" min="0"/></div>
+          <span class="hint">Health, life, or term plan (enter 0 if none)</span>
+        </div>
+        <div class="fg">
+          <label>Financial Goal Target</label>
+          <div class="iw"><span class="sym">₹</span><input type="number" id="goalTarget" placeholder="1000000" min="0"/></div>
+          <span class="hint">What you're working toward (optional)</span>
+        </div>
+      </div>
+
+      <button class="btn-go" id="calcBtn" onclick="calculate()">Calculate My Finance Score →</button>
+    </div>
+  </div>
+
+  <!-- LOADING -->
+  <div class="loading-state" id="loadingState">
+    <div class="spinner"></div>
+    <p><strong>Analysing your finances…</strong><br>Scoring across 5 financial pillars<br>and generating AI-powered insights</p>
+  </div>
+
+  <!-- RESULTS -->
+  <div class="results-section" id="resultsSection">
+
+    <div class="rtop">
+      <h2>Your Finance Health Report</h2>
+      <button class="btn-back" onclick="retake()">← Retake</button>
+    </div>
+
+    <!-- Score hero -->
+    <div class="score-card">
+      <div class="dial">
+        <svg width="164" height="164" viewBox="0 0 164 164">
+          <defs>
+            <linearGradient id="dg" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="#6c63ff"/>
+              <stop offset="100%" stop-color="#00d4aa"/>
+            </linearGradient>
+          </defs>
+          <circle cx="82" cy="82" r="68" fill="none" stroke="rgba(255,255,255,0.07)" stroke-width="10"/>
+          <circle id="dialArc" cx="82" cy="82" r="68" fill="none"
+            stroke="url(#dg)" stroke-width="10" stroke-linecap="round"
+            stroke-dasharray="427.26" stroke-dashoffset="427.26"
+            transform="rotate(-90 82 82)"
+            style="transition:stroke-dashoffset 1.6s cubic-bezier(0.4,0,0.2,1)"/>
+        </svg>
+        <div class="dial-mid">
+          <div class="dial-n" id="dialNum">0</div>
+          <div class="dial-d">/ 100</div>
+        </div>
+      </div>
+      <div class="sinfo">
+        <div class="sgrade" id="sGrade">CALCULATING…</div>
+        <div class="sverdict" id="sVerdict">—</div>
+        <div class="stagline" id="sTagline"></div>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-row" id="statsRow"></div>
+
+    <!-- Pillars -->
+    <div class="pgrid" id="pgrid"></div>
+
+    <!-- AI Advice -->
+    <div class="advice">
+      <div class="advice-top">
+        <div class="ai-chip"><div class="ai-dot"></div>AI Advisor</div>
+        <div class="advice-title">Personalised Financial Guidance</div>
+      </div>
+      <div class="advice-body" id="adviceBody"><em style="color:var(--muted)">Generating your personalised advice…</em></div>
+    </div>
+
+    <!-- Footer note -->
+    <div class="fnote">
+      <div class="fnote-icon">📌</div>
+      <p>
+        <strong>Educational Project — Not Financial Advice.</strong> This tool was built as a personal project to apply personal finance concepts programmatically. Scoring uses standard benchmarks: the <span class="chip">50/30/20 rule</span>, <span class="chip">3–6 month emergency fund</span>, and <span class="chip">debt-to-income ratio</span> guidelines. Results are illustrative estimates only — please consult a certified financial planner before making any financial decisions.
+        <br><br>
+        <strong>Built by:</strong> Darshan Pipada &nbsp;·&nbsp; <strong>Stack:</strong> <span class="chip">Python</span> <span class="chip">Claude AI API</span> &nbsp;·&nbsp; <strong>Concepts applied:</strong> Savings rate, DTI ratio, liquidity benchmarks, investment ratio
+      </p>
+    </div>
+
+    <!-- Signature -->
+    <div style="text-align:center;margin-top:28px;padding:16px;">
+      <div style="display:inline-flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--border);border-radius:100px;padding:10px 22px;">
+        <div style="width:28px;height:28px;background:linear-gradient(135deg,var(--accent),#a78bfa);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:white;font-family:'Syne',sans-serif;flex-shrink:0;">DP</div>
+        <div style="text-align:left;">
+          <div style="font-family:'Syne',sans-serif;font-size:13px;font-weight:700;letter-spacing:-0.3px;">Darshan Pipada</div>
+          <div style="font-size:10px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;font-weight:500;">Finance &amp; Technology Student</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// ─────────────────────────────────────────────────
+// SCORING ENGINE
+// Standard personal finance benchmarks
+// ─────────────────────────────────────────────────
+function runScoring(d) {
+  const inc = d.income  || 1;
+  const exp = d.expenses || 1;
+
+  // 1. Savings Rate (25%)
+  const sr = (d.savings / inc) * 100;
+  const sScore =
+    sr >= 30 ? 100 : sr >= 20 ? 85 : sr >= 15 ? 68 :
+    sr >= 10 ? 50  : sr >= 5  ? 28 : 10;
+
+  // 2. Debt-to-Annual-Income (20%)
+  const dti = (d.debt / (inc * 12)) * 100;
+  const dScore =
+    d.debt === 0 ? 100 : dti <= 10 ? 92 : dti <= 25 ? 75 :
+    dti <= 40    ? 55  : dti <= 65 ? 32 : 12;
+
+  // 3. Emergency Fund in months (20%)
+  const mo = d.emergency / exp;
+  const eScore =
+    mo >= 6 ? 100 : mo >= 4 ? 82 : mo >= 3 ? 66 :
+    mo >= 1.5 ? 42 : mo >= 0.5 ? 22 : 5;
+
+  // 4. Investment Ratio (20%)
+  const ir = (d.investment / inc) * 100;
+  const iScore =
+    ir >= 20 ? 100 : ir >= 15 ? 84 : ir >= 10 ? 66 :
+    ir >= 5  ? 46  : ir >= 1  ? 24 : 0;
+
+  // 5. Spending Discipline (15%) — expense ratio + insurance bonus
+  const xr = (d.expenses / inc) * 100;
+  let spScore =
+    xr <= 40 ? 95 : xr <= 50 ? 78 : xr <= 60 ? 58 :
+    xr <= 72 ? 38 : xr <= 85 ? 18 : 5;
+  if (d.insurance > 0) spScore = Math.min(100, spScore + 12);
+
+  const total = Math.round(
+    sScore * 0.25 + dScore * 0.20 +
+    eScore * 0.20 + iScore * 0.20 + spScore * 0.15
+  );
+
+  const col = s => s >= 65 ? 'var(--green)' : s >= 40 ? 'var(--amber)' : 'var(--rose)';
+  const bg  = s => s >= 65 ? 'var(--green-light)' : s >= 40 ? 'var(--amber-light)' : 'var(--rose-light)';
+  const bc  = s => s >= 65 ? 'rgba(74,222,128,0.2)' : s >= 40 ? 'rgba(255,179,71,0.2)' : 'rgba(255,95,126,0.2)';
+
+  return {
+    total,
+    meta: { sr, dti, mo, ir, xr },
+    pillars: [
+      { name:'Savings Rate',        icon:'💰', score:sScore,  meta:`${sr.toFixed(1)}% saved · benchmark ≥ 20%`,              col:col(sScore),  bg:bg(sScore),  bc:bc(sScore)  },
+      { name:'Debt Load',           icon:'🏦', score:dScore,  meta:`Debt-to-income: ${dti.toFixed(1)}% · benchmark < 30%`,   col:col(dScore),  bg:bg(dScore),  bc:bc(dScore)  },
+      { name:'Emergency Fund',      icon:'🛡️', score:eScore,  meta:`${mo.toFixed(1)} months covered · benchmark 3–6 months`, col:col(eScore),  bg:bg(eScore),  bc:bc(eScore)  },
+      { name:'Investment Ratio',    icon:'📈', score:iScore,  meta:`${ir.toFixed(1)}% of income invested · benchmark ≥ 10%`, col:col(iScore),  bg:bg(iScore),  bc:bc(iScore)  },
+      { name:'Spending Discipline', icon:'⚖️', score:spScore, meta:`${xr.toFixed(1)}% of income spent · ${d.insurance > 0 ? 'Insurance active ✓' : 'No insurance found'}`, col:col(spScore), bg:bg(spScore), bc:bc(spScore) },
+    ]
+  };
+}
+
+function verdict(score) {
+  if (score >= 85) return ['GRADE A+ · EXCEPTIONAL', 'Financially Elite',      'You are practising near-perfect financial discipline. Your savings, investments, and debt management are genuinely impressive.'];
+  if (score >= 75) return ['GRADE A  · EXCELLENT',   'Strong Foundations',     'You have built a solid financial base. A few targeted improvements could push you into exceptional territory.'];
+  if (score >= 62) return ['GRADE B  · GOOD',         'On the Right Track',    'Your core habits are healthy. Addressing your weaker pillars now will compound significantly over the next few years.'];
+  if (score >= 48) return ['GRADE C  · AVERAGE',      'Room to Improve',       'You have some healthy habits but key gaps exist. A focused plan over the next 6 months can move you up two full grades.'];
+  if (score >= 32) return ['GRADE D  · NEEDS WORK',   'Financial Stress Risk', 'Some areas require urgent attention. The good news — awareness is the first step. Start with one pillar at a time.'];
+  return                   ['GRADE E  · CRITICAL',    'Take Action Now',       'Your current structure puts you at significant financial risk. Prioritise emergency fund and debt reduction immediately.'];
+}
+
+// ─────────────────────────────────────────────────
+// AI ADVICE
+// ─────────────────────────────────────────────────
+async function fetchAdvice(d, result) {
+  const { meta, total, pillars } = result;
+  const weak   = pillars.filter(p => p.score < 55).map(p => p.name).join(', ') || 'none';
+  const strong = pillars.filter(p => p.score >= 72).map(p => p.name).join(', ') || 'none';
+
+  const prompt = `You are an experienced personal finance mentor reviewing someone's financial health report.
+
+Score: ${total}/100
+Savings Rate: ${meta.sr.toFixed(1)}% (good ≥ 20%)
+Debt-to-Income: ${meta.dti.toFixed(1)}% (good < 30%)
+Emergency Fund: ${meta.mo.toFixed(1)} months (good = 3–6)
+Investment Ratio: ${meta.ir.toFixed(1)}% of income (good ≥ 10%)
+Spending Ratio: ${meta.xr.toFixed(1)}% of income
+Strong pillars: ${strong}
+Weak pillars: ${weak}
+Monthly income: ₹${d.income.toLocaleString('en-IN')}
+
+Write exactly 3 short paragraphs of personalised, practical advice:
+1. Highlight the single strongest thing they are doing well — be specific and encouraging (2 sentences)
+2. Name the ONE biggest financial risk and give ONE clear, specific action to fix it with a target amount (2–3 sentences)
+3. Give one realistic long-term wealth-building suggestion tied to their income (2 sentences)
+
+Style:
+- Use <strong> to bold 2–3 key figures or actions per paragraph
+- Include specific ₹ amounts where helpful
+- Warm and direct like a mentor, not a generic AI
+- No bullet points, no headers, no markdown asterisks`;
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        messages: [{ role: 'user', content: prompt }]
+      })
+    });
+    const json = await res.json();
+    if (json.content?.[0]?.text) return json.content[0].text;
+  } catch(e) { console.error(e); }
+
+  // Fallback
+  const best = meta.sr >= 15 ? 'savings discipline' : meta.ir >= 8 ? 'investment consistency' : 'financial self-awareness';
+  const fix  = meta.mo < 3
+    ? `building your emergency fund to <strong>₹${(d.expenses * 3).toLocaleString('en-IN')}</strong> (3 months of expenses)`
+    : meta.dti > 40
+    ? `reducing your total debt below <strong>₹${Math.round(d.income * 12 * 0.25).toLocaleString('en-IN')}</strong>`
+    : `increasing your monthly investment to <strong>₹${Math.round(d.income * 0.12).toLocaleString('en-IN')}</strong> (12% of income)`;
+
+  return `Your <strong>${best}</strong> stands out — this kind of intentionality puts you ahead of most people at your stage. That foundation is something you can build on rapidly.
+
+The highest-impact move right now is <strong>${fix}</strong>. This single change will meaningfully improve your financial resilience and reduce vulnerability to unexpected events.
+
+Consider setting up a <strong>₹${Math.max(1000, Math.round(d.income * 0.07)).toLocaleString('en-IN')} monthly SIP</strong> in a diversified equity mutual fund. Over 10 years, consistent investing compounds far beyond what most people expect — the amount matters less than the habit.`;
+}
+
+// ─────────────────────────────────────────────────
+// MAIN
+// ─────────────────────────────────────────────────
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.display = 'block';
+  setTimeout(() => t.style.display = 'none', 3200);
+}
+
+async function calculate() {
+  const ids = ['income','savings','expenses','debt','emergency','investment','insurance','goalTarget'];
+  const d = {};
+  ids.forEach(id => d[id] = parseFloat(document.getElementById(id).value) || 0);
+
+  if (d.income <= 0)             { showToast('Please enter your monthly income to continue.'); document.getElementById('income').focus(); return; }
+  if (d.savings > d.income)      { showToast('Savings cannot exceed your monthly income.'); return; }
+  if (d.expenses > d.income * 2) { showToast('Expenses seem unusually high — please double-check.'); return; }
+
+  document.getElementById('formSection').style.display = 'none';
+  document.getElementById('loadingState').style.display = 'block';
+  document.getElementById('calcBtn').disabled = true;
+  await sleep(2100);
+
+  const result = runScoring(d);
+  const [grade, verd, tag] = verdict(result.total);
+
+  document.getElementById('loadingState').style.display = 'none';
+  document.getElementById('resultsSection').style.display = 'block';
+
+  // Animate dial
+  await sleep(80);
+  const circ = 427.26;
+  document.getElementById('dialArc').style.strokeDashoffset = circ - (result.total / 100) * circ;
+  animCount('dialNum', 0, result.total, 1500);
+
+  document.getElementById('sGrade').textContent   = grade;
+  document.getElementById('sVerdict').textContent = verd;
+  document.getElementById('sTagline').textContent  = tag;
+
+  // Stats
+  const sc3 = (v, g, w, rev) => {
+    const n = parseFloat(v);
+    if (!rev) return n >= g ? 'cg' : n >= w ? 'ca' : 'cr';
+    return n <= g ? 'cg' : n <= w ? 'ca' : 'cr';
+  };
+  const sr  = (d.savings  / d.income * 100).toFixed(1);
+  const dti = (d.debt / (d.income * 12) * 100).toFixed(1);
+  const mo  = (d.emergency / (d.expenses || 1)).toFixed(1);
+
+  document.getElementById('statsRow').innerHTML = `
+    <div class="stat"><div class="sv ${sc3(sr,20,10)}">${sr}%</div><div class="sl">Savings Rate</div></div>
+    <div class="stat"><div class="sv ${sc3(dti,30,50,true)}">${dti}%</div><div class="sl">Debt-to-Income</div></div>
+    <div class="stat"><div class="sv ${sc3(mo,4,2)}">${mo} mo</div><div class="sl">Emergency Cover</div></div>
+  `;
+
+  // Pillars
+  document.getElementById('pgrid').innerHTML = result.pillars.map((p,i) => `
+    <div class="pillar" style="animation-delay:${i*0.07}s;border-color:${p.bc}">
+      <div class="phead">
+        <div class="pleft">
+          <div class="pico" style="background:${p.bg}">${p.icon}</div>
+          <div><div class="pname">${p.name}</div><div class="pmeta">${p.meta}</div></div>
+        </div>
+        <div class="ppts" style="color:${p.col}">${p.score}</div>
+      </div>
+      <div class="track"><div class="bar" id="bar${i}" style="background:${p.col}"></div></div>
+    </div>
+  `).join('');
+
+  await sleep(150);
+  result.pillars.forEach((p,i) => setTimeout(() => {
+    const el = document.getElementById('bar'+i);
+    if(el) el.style.width = p.score+'%';
+  }, i * 90));
+
+  // AI advice
+  document.getElementById('adviceBody').innerHTML = '<em style="color:var(--muted)">Generating personalised advice…</em>';
+  const advice = await fetchAdvice(d, result);
+  document.getElementById('adviceBody').innerHTML = advice.replace(/\n\n/g,'<br><br>');
+}
+
+function retake() {
+  document.getElementById('resultsSection').style.display = 'none';
+  document.getElementById('formSection').style.display = 'block';
+  document.getElementById('calcBtn').disabled = false;
+  document.getElementById('dialArc').style.strokeDashoffset = 427.26;
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+
+function animCount(id, from, to, ms) {
+  const el = document.getElementById(id);
+  const t0 = performance.now();
+  const tick = now => {
+    const p = Math.min((now - t0) / ms, 1);
+    const ease = 1 - Math.pow(1 - p, 3);
+    el.textContent = Math.round(from + (to - from) * ease);
+    if (p < 1) requestAnimationFrame(tick);
+  };
+  requestAnimationFrame(tick);
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && document.getElementById('formSection').style.display !== 'none') calculate();
+});
+</script>
+</body>
+</html>
